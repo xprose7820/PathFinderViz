@@ -1,0 +1,20 @@
+.grid{
+
+    display: grid; 
+    justify-content: center; 
+    margin-top: 20vh; 
+
+}
+
+.grid-row{
+    display: flex; 
+}
+/* this is saying the first row only*/
+.grid-row:first-child .node{
+    border-top: 1px solid lightgray; 
+}
+
+/* this is saying the first node in each row*/
+.grid-row .node:first-child{
+    border-left: 1px solid lightgray; 
+}

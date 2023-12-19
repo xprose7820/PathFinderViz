@@ -1,0 +1,242 @@
+.node {
+    border-bottom: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+    box-sizing: border-box;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.node-start {
+    background-color: rgb(92, 255, 92);
+    background-image: url("./images/car-side-solid.svg");
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
+    background-position: center;
+    border-radius: 25%;
+
+}
+
+.node-end {
+    background-color: rgb(255, 63, 63);
+    background-image: url("./images/flag-checkered-solid.svg");
+    background-repeat: no-repeat;
+    background-size: 75% 75%;
+    background-position: center;
+    border-radius: 25%;
+}
+
+.node-wall {
+    background-image: url("./images/firewall (1).png");
+    background-repeat: no-repeat;
+    background-size: 100% 110%;
+    background-position: center;
+    animation: expandNode_wall 1.1s forwards;
+}
+@keyframes expandNode_wall {
+    from {
+        transform: scale(0.1);
+        /* Start from a smaller size */
+        border-radius: 90%;
+    }
+
+    to {
+        transform: scale(1);
+        /* Scale up to full size */
+        border-radius: 0%;
+        /* Adjust final border-radius as needed */
+    }
+}
+
+.node-visited {
+    border-top: 1px solid white !important;
+
+    border-left: 1px solid white !important;
+    border-bottom: 1px solid white !important;
+    border-right: 1px solid white !important;
+
+    background-color: blue;
+    border-radius: 50%;
+    transform: translate(0%, 0%) scale(1);
+    transition: transform .8s, background-color .8s;
+    animation: expandNode 2s forwards, colorChange 1.5s .2s forwards;
+}
+
+@keyframes expandNode {
+    from {
+        transform: scale(0.1);
+        /* Start from a smaller size */
+        border-radius: 90%;
+    }
+
+    to {
+        transform: scale(1);
+        /* Scale up to full size */
+        border-radius: 0%;
+        /* Adjust final border-radius as needed */
+    }
+}
+
+@keyframes colorChange {
+    0% {
+        background-color: darkblue;
+    }
+
+    35% {
+        background-color: rgb(30, 30, 255);
+    }
+
+    70% {
+        background-color: rgb(46, 243, 161);
+    }
+
+    100% {
+        background-color: rgb(131, 251, 245);
+    }
+}
+
+
+/* .node-path {
+
+
+    border-top: 1px solid white !important;
+    border-left: 1px solid white !important;
+    border-bottom: 1px solid white !important;
+    border-right: 1px solid white !important;
+
+    background-color: yellow;
+
+    border-radius: 50%;
+    transform: translate(0%, 0%) scale(1);
+    transition: transform 1s;
+    animation: expandNode_path 1s forwards;
+} */
+
+
+@keyframes expandNode_path {
+    from {
+        transform: scale(0.1);
+        /* Start from a smaller size */
+        border-radius: 90%;
+    }
+
+    to {
+        transform: scale(1);
+        /* Scale up to full size */
+        border-radius: 0%;
+        /* Adjust final border-radius as needed */
+    }
+}
+
+     .node-path-up {
+    position: relative; /* Needed for absolute positioning of pseudo-element */
+    background-color: yellow;
+
+    border-color: yellow !important;
+    border-radius: 50%;
+    transform: translate(0%, 0%) scale(1);
+    transition: transform 1s;
+    animation: expandNode_path 1s forwards;
+}
+
+.node-path-up::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./images/angle-up-solid.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    opacity: 0;
+    animation: showHideArrow 1.6s forwards;
+}
+
+.node-path-right {
+    position: relative; /* Needed for absolute positioning of pseudo-element */
+    background-color: yellow;
+
+    border-color:  yellow !important;
+    border-radius: 50%;
+    transform: translate(0%, 0%) scale(1);
+    transition: transform 1s;
+    animation: expandNode_path 1s forwards;
+}
+
+.node-path-right::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./images/angle-right-solid.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    opacity: 0;
+    animation: showHideArrow 1.6s forwards;
+}
+
+@keyframes showHideArrow {
+    0%, 30% {
+        opacity: 1; /* Arrow is visible */
+    }
+    100% {
+        opacity: 0; /* Arrow fades out */
+    }
+}
+.node-path-down {
+    position: relative; /* Needed for absolute positioning of pseudo-element */
+    background-color: yellow;
+    border-color:  yellow !important;
+    border-radius: 50%;
+    transform: translate(0%, 0%) scale(1);
+    transition: transform 1s;
+    animation: expandNode_path 1s forwards;
+}
+
+.node-path-down::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./images/angle-down-solid.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    opacity: 0;
+    animation: showHideArrow 1.6s forwards;
+}
+.node-path-left {
+    position: relative; /* Needed for absolute positioning of pseudo-element */
+    background-color: yellow;
+
+    border-color: yellow  !important;
+    border-radius: 50%;
+    transform: translate(0%, 0%) scale(1);
+    transition: transform 1s;
+    animation: expandNode_path 1s forwards;
+}
+
+.node-path-left::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./images/angle-left-solid.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    opacity: 0;
+    animation: showHideArrow 1.6s forwards;
+}
+
+.node-passage{
+    background-color: blueviolet;
+}
