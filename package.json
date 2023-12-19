@@ -1,7 +1,7 @@
 {
   "name": "path-finder-ts",
   "version": "0.1.0",
-  "homepage": "https://github.github.io/xprose7820/PathFinderViz",
+  "homepage": "https://xprose7820.github.io/PathFinderViz",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
