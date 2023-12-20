@@ -5,8 +5,10 @@ async function dijkstra(
   startNode: NodeType | null,
   endNode: NodeType | null,
   updateGridDuringPathFind: (node: NodeType) => void,
-  setPathNodesWithDelay: (pathNodeWithDirection: PathNodeWithDirection) => void
+  setPathNodesWithDelay: (pathNodeWithDirection: PathNodeWithDirection) => void,
+  stopExecution: React.MutableRefObject<boolean> 
 ) {
+
   // console.log("inside dijkstra main function");
 
   let localGrid = createLocalGrid(grid);
@@ -21,6 +23,10 @@ async function dijkstra(
   // console.log("nodes array: ", nodes);
 
   while (!!nodes.length) {
+    if (stopExecution.current){
+      return;
+    }
+   
     // console.log("inside while loop");
     // console.log("startNode after setting distance: ", localStartNode);
     sortNodesByDistance(nodes);
