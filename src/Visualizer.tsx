@@ -76,44 +76,44 @@ const Visualizer = () => {
   const [mouseDown, setMouseDown] = useState(false);
   const [selectedMazePattern, setSelectedMazePattern] = useState("");
   const stopExecution = useRef(false);
-  const handleNodeClick = (row: number, col: number) => {
-    // Implement logic for node click event
-    // Create a new grid with updated values
-    const newGrid = grid.map((gridRow, rowIndex) => {
-      return gridRow.map((node: NodeType, nodeIndex: number) => {
-        if (rowIndex === row && nodeIndex === col) {
-          // Update the node as necessary
-          // For example, toggling isWall
-          if (!firstClickStart) {
-            // Check if it is border
-            if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
-              return node;
-            }
-            setFirstClickStart(true);
-            setStartNode({ ...node, isStart: true });
-  
-            return { ...node, isStart: true };
-          } else if (!secondClickEnd) {
-            // Check if it is border
-            if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
-              return node;
-            }
-            setSecondClickEnd(true);
-            setEndNode({ ...node, isEnd: true });
-            return { ...node, isEnd: true };
-          } else {
-            return { ...node, isWall: !node.isWall };
+const handleNodeClick = (row: number, col: number) => {
+  // Implement logic for node click event
+  // Create a new grid with updated values
+  const newGrid = grid.map((gridRow, rowIndex) => {
+    return gridRow.map((node: NodeType, nodeIndex: number) => {
+      if (rowIndex === row && nodeIndex === col) {
+        // Update the node as necessary
+        // For example, toggling isWall
+        if (!firstClickStart) {
+          // Check if it is border
+          if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
+            return node;
           }
+          setFirstClickStart(true);
+          setStartNode({ ...node, isStart: true });
+
+          return { ...node, isStart: true };
+        } else if (!secondClickEnd) {
+          // Check if it is border
+          if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
+            return node;
+          }
+          setSecondClickEnd(true);
+          setEndNode({ ...node, isEnd: true });
+          return { ...node, isEnd: true };
         } else {
-          return node;
+          return { ...node, isWall: !node.isWall };
         }
-      });
+      } else {
+        return node;
+      }
     });
-  
-    // Update the grid state
-    setGrid(newGrid);
-  };
-  
+  });
+
+  // Update the grid state
+  setGrid(newGrid);
+};
+
 
   // no need to pass in grid, we are accessing it directly inside Visualizer
   const updateGridDuringPathFind = (node: NodeType) => {
@@ -285,7 +285,7 @@ const Visualizer = () => {
     event
   ) => {
     resetGrid(); // First call
-    setTimeout(() => resetGrid(), 0); // Second call, after the first one finishes
+    setTimeout(() => resetGrid(), 10); // Second call, after the first one finishes
   };
 
   function addOuterWalls(grid: NodeType[][]) {
@@ -493,7 +493,7 @@ const Visualizer = () => {
       <div className="container_middle">
         <div className="legend-flex-container">
           <div id="carImg"></div>
-          <div style={{ marginLeft: "-.1rem" }}>Start Node</div>
+          <div style={{ marginLeft: "-.1rem" }}>Start Node, check</div>
         </div>
         <div className="legend-flex-container">
           <div id="flagImg"></div>
