@@ -39,7 +39,7 @@ const Visualizer = () => {
       generateMaze()
         .then(() => {
           // completely guessing how long it would take to generate maze 
-          setTimeout(() => setIsMazeGenerating(false), 4000);
+          setTimeout(() => setIsMazeGenerating(false), 3000);
         })
         .catch(() => {
           setIsMazeGenerating(false);
