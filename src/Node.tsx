@@ -48,6 +48,7 @@ const Node: React.FC<NodeType> = ({
   //   : "";
   // console.log(`Rendering node ${row}-${col}, isPath: ${isPath}, className: ${extraClassName}`);
   let classNameForPassage; 
+  // is passage was for debugging, could be considered a "hole"
   if (isPassage){
     classNameForPassage = 'node-passage';
   }else if (isPassage === false){

@@ -6,9 +6,8 @@ async function dijkstra(
   endNode: NodeType | null,
   updateGridDuringPathFind: (node: NodeType) => void,
   setPathNodesWithDelay: (pathNodeWithDirection: PathNodeWithDirection) => void,
-  stopExecution: React.MutableRefObject<boolean> 
+  stopExecution: React.MutableRefObject<boolean>
 ) {
-
   // console.log("inside dijkstra main function");
 
   let localGrid = createLocalGrid(grid);
@@ -23,10 +22,10 @@ async function dijkstra(
   // console.log("nodes array: ", nodes);
 
   while (!!nodes.length) {
-    if (stopExecution.current){
+    if (stopExecution.current) {
       return;
     }
-   
+
     // console.log("inside while loop");
     // console.log("startNode after setting distance: ", localStartNode);
     sortNodesByDistance(nodes);
@@ -46,22 +45,40 @@ async function dijkstra(
     closestNode!.isVisited = true;
 
     await new Promise((resolve) => setTimeout(resolve, 1));
-
+    if (closestNode!.row === 1 && closestNode!.col === 2) {
+      console.log(
+        "before updating visited state",
+        JSON.stringify(grid[1][2], null, 2)
+      );
+    }
     // console.log("updating grid inside dij");
     updateGridDuringPathFind(closestNode!);
+    if (closestNode!.row === 1 && closestNode!.col === 2) {
+      console.log(
+        "before updating visited state",
+        JSON.stringify(grid[1][2], null, 2)
+      );
+    }
 
     if (closestNode === localGrid[endNode!.row][endNode!.col]) {
-      const pathWithDirections: PathNodeWithDirection[] = reconstructPath(closestNode!);
+      
+      const pathWithDirections: PathNodeWithDirection[] = reconstructPath(
+        closestNode!
+      );
       pathWithDirections.pop();
       // console.log(path);
       // console.log("calling SetPathNodes");
       // setPathNodes(path);
-      for (const pathNodeWithDirection of pathWithDirections){
+      for (const pathNodeWithDirection of pathWithDirections) {
+        
         await new Promise((resolve) => setTimeout(resolve, 80));
-        setPathNodesWithDelay(pathNodeWithDirection); 
 
+        if (stopExecution.current){
+          break;
+        }
+        setPathNodesWithDelay(pathNodeWithDirection);
       }
-      
+
       break;
     } // Found the shortest path
 
@@ -128,7 +145,10 @@ function reconstructPath(endNode: NodeType): PathNodeWithDirection[] {
   let currentNode: NodeType | null = endNode;
 
   while (currentNode && currentNode.previousNode) {
-    const direction = getDirectionFromPrevious(currentNode.previousNode, currentNode);
+    const direction = getDirectionFromPrevious(
+      currentNode.previousNode,
+      currentNode
+    );
     path.unshift({ node: currentNode, direction }); // Store node with direction
     currentNode = currentNode.previousNode;
   }
@@ -141,7 +161,10 @@ function reconstructPath(endNode: NodeType): PathNodeWithDirection[] {
   return path;
 }
 
-function getDirectionFromPrevious(previousNode: NodeType, currentNode: NodeType): number {
+function getDirectionFromPrevious(
+  previousNode: NodeType,
+  currentNode: NodeType
+): number {
   if (previousNode.row < currentNode.row) return 3; // Down
   if (previousNode.row > currentNode.row) return 1; // Up
   if (previousNode.col < currentNode.col) return 2; // Right

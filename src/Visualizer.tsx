@@ -9,6 +9,8 @@ import "./Visualizer.css"; // CSS for the visualizer layout
 import dijkstra from "./PathAlgorithms/Dijkstra";
 import { start } from "repl";
 import { EvalSourceMapDevToolPlugin } from "webpack";
+import AStar from "./PathAlgorithms/AStar";
+import { stringify } from "querystring";
 
 const Visualizer = () => {
   const numRows = 22; // Define the number of rows
@@ -19,6 +21,8 @@ const Visualizer = () => {
   const handleAlgorithmChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    clearVisitState();
+    
     setSelectedAlgorithm(event.target.value);
     console.log(event.target.value);
   };
@@ -76,44 +80,53 @@ const Visualizer = () => {
   const [mouseDown, setMouseDown] = useState(false);
   const [selectedMazePattern, setSelectedMazePattern] = useState("");
   const stopExecution = useRef(false);
-const handleNodeClick = (row: number, col: number) => {
-  // Implement logic for node click event
-  // Create a new grid with updated values
-  const newGrid = grid.map((gridRow, rowIndex) => {
-    return gridRow.map((node: NodeType, nodeIndex: number) => {
-      if (rowIndex === row && nodeIndex === col) {
-        // Update the node as necessary
-        // For example, toggling isWall
-        if (!firstClickStart) {
-          // Check if it is border
-          if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
-            return node;
-          }
-          setFirstClickStart(true);
-          setStartNode({ ...node, isStart: true });
+  const handleNodeClick = (row: number, col: number) => {
+    // Implement logic for node click event
+    // Create a new grid with updated values
+    const newGrid = grid.map((gridRow, rowIndex) => {
+      return gridRow.map((node: NodeType, nodeIndex: number) => {
+        if (rowIndex === row && nodeIndex === col) {
+          // Update the node as necessary
+          // For example, toggling isWall
+          if (!firstClickStart) {
+            // Check if it is border
+            if (
+              row === 0 ||
+              row === numRows - 1 ||
+              col === 0 ||
+              col === numCols - 1
+            ) {
+              return node;
+            }
+            setFirstClickStart(true);
+            setStartNode({ ...node, isStart: true });
 
-          return { ...node, isStart: true };
-        } else if (!secondClickEnd) {
-          // Check if it is border
-          if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
-            return node;
+            return { ...node, isStart: true };
+          } else if (!secondClickEnd) {
+            // Check if it is border
+            if (
+              row === 0 ||
+              row === numRows - 1 ||
+              col === 0 ||
+              col === numCols - 1
+            ) {
+              return node;
+            }
+            setSecondClickEnd(true);
+            setEndNode({ ...node, isEnd: true });
+            return { ...node, isEnd: true };
+          } else {
+            return { ...node, isWall: !node.isWall };
           }
-          setSecondClickEnd(true);
-          setEndNode({ ...node, isEnd: true });
-          return { ...node, isEnd: true };
         } else {
-          return { ...node, isWall: !node.isWall };
+          return node;
         }
-      } else {
-        return node;
-      }
+      });
     });
-  });
 
-  // Update the grid state
-  setGrid(newGrid);
-};
-
+    // Update the grid state
+    setGrid(newGrid);
+  };
 
   // no need to pass in grid, we are accessing it directly inside Visualizer
   const updateGridDuringPathFind = (node: NodeType) => {
@@ -141,6 +154,8 @@ const handleNodeClick = (row: number, col: number) => {
         });
       });
     });
+
+
   };
 
   const setPathNodes = (path: NodeType[]) => {
@@ -198,9 +213,7 @@ const handleNodeClick = (row: number, col: number) => {
     // ... other logic to handle delay if needed
   };
 
-  // useEffect(() => {
-  //   console.log("most likely after setpathnode", grid);
-  // }, [grid]);
+
 
   const handleNodeMouseEnter = (row: number, col: number) => {
     console.log("is mouse down", mouseDown);
@@ -217,11 +230,27 @@ const handleNodeClick = (row: number, col: number) => {
     }
   };
 
-  const startPathFinding = () => {
+
+ const startPathFinding = () => {
+    // console.log(
+    //   "this is startNode when clickgin run",
+    //   JSON.stringify(startNode, null, 2)
+    // );
+    // console.log("this is end node", JSON.stringify(endNode, null, 2));
+
+    // console.log("should be calling clearVisitState");
+    clearVisitState();
+
+    
+    
+
     stopExecution.current = false;
-    console.log("inside startPathFinding function");
+    
+    console.log("this is row 1, col 2, should be right after clearVisitState", JSON.stringify(grid[1][2], null, 2));
+
+    // console.log("inside startPathFinding function");
     if (selectedAlgorithm === "dijkstra") {
-      console.log("start DPathFind");
+      console.log("starting dijkstra");
       dijkstra(
         grid,
         startNode,
@@ -230,7 +259,39 @@ const handleNodeClick = (row: number, col: number) => {
         setPathNodesWithDelay,
         stopExecution
       );
+    } else if (selectedAlgorithm === "aStar") {
+      console.log("starting astar");
+      AStar(startNode!, endNode!, grid, updateGridDuringPathFind);
     }
+  };
+
+  const clearVisitState = () => {
+    console.log("inside clear VisitState");
+
+    setGrid((prevGrid) => {
+      return prevGrid.map((row) => {
+        return row.map((node: NodeType) => {
+          // console.log("print isPath status", JSON.stringify(node.isPath, null, 2));
+          // if (node.isPath !== 0){
+          //   console.log("this node is a path", JSON.stringify(node, null, 2));
+          // }
+          if (node.isVisited){
+            console.log("node was visited, fixing now", JSON.stringify(node, null, 2));
+          }
+          
+          return {
+            ...node,
+          
+            isVisited: false,
+            isPath: 0,
+            
+          
+          };
+        });
+      });
+    });
+
+
   };
 
   const resetGrid = () => {
@@ -268,6 +329,7 @@ const handleNodeClick = (row: number, col: number) => {
             distance: Infinity, // Reset this if needed
             // ... other properties to reset
             previousNode: null,
+            isPassage: false,
           };
         });
       });
@@ -337,7 +399,7 @@ const handleNodeClick = (row: number, col: number) => {
     startNode: NodeType,
     endNode: NodeType
   ): Promise<void> {
-    if (stopExecution.current){
+    if (stopExecution.current) {
       return;
     }
     if (x2 - x1 < 3 || y2 - y1 < 3) {
@@ -400,8 +462,8 @@ const handleNodeClick = (row: number, col: number) => {
       }
     }
 
-    if(stopExecution.current){
-      return; 
+    if (stopExecution.current) {
+      return;
     }
 
     // Recursive calls to divide the remaining area
