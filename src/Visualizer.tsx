@@ -40,6 +40,7 @@ const Visualizer = () => {
       generateMaze()
         .then(() => {
           setIsMazeGenerating(false);
+          setTimeout(() => setIsMazeGenerating(false), 10); 
         })
         .catch(() => {});
     }
