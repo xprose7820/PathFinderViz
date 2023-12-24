@@ -31,18 +31,20 @@ const Visualizer = () => {
   const handleMazePatternChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const pattern = event.target.value;
     setSelectedMazePattern(pattern); // Assuming you have a state for this
-    setIsMazeGenerating(true);
-    setTimeout(() => setIsMazeGenerating(true), 10); 
-    
 
     if (pattern === "recursiveDivision") {
       stopExecution.current = false;
+      setIsMazeGenerating(true);
+
       generateMaze()
         .then(() => {
-          setIsMazeGenerating(false);
-          setTimeout(() => setIsMazeGenerating(false), 10); 
+          // completely guessing how long it would take to generate maze 
+          setTimeout(() => setIsMazeGenerating(false), 6000);
         })
-        .catch(() => {});
+        .catch(() => {
+          setIsMazeGenerating(false);
+        });
+      // setTimeout(() => setIsMazeGenerating(false), 10);
     }
   };
 
@@ -337,23 +339,23 @@ const Visualizer = () => {
   }
 
   function generateMaze(): Promise<void> {
-    return new Promise( (resolve, reject) => {
-    setGrid((prevGrid) => {
-      const newGrid = prevGrid.map((row) =>
-        row.map((node: NodeType) => ({
-          ...node,
-          isWall: node.isStart || node.isEnd ? node.isWall : false,
-        }))
-      );
+    return new Promise((resolve, reject) => {
+      setGrid((prevGrid) => {
+        const newGrid = prevGrid.map((row) =>
+          row.map((node: NodeType) => ({
+            ...node,
+            isWall: node.isStart || node.isEnd ? node.isWall : false,
+          }))
+        );
 
-      addOuterWalls(newGrid);
-      return newGrid;
+        addOuterWalls(newGrid);
+        return newGrid;
+      });
+
+      divideArea(1, 1, grid[0].length - 1, grid.length - 1, startNode!, endNode!);
+      resolve();
+      reject(new Error("maze failed"));
     });
-
-    divideArea(1, 1, grid[0].length - 1, grid.length - 1, startNode!, endNode!);
-  resolve(); 
-  reject(new Error("maze failed"));
-  });
   }
 
   type Passage = {
@@ -369,7 +371,6 @@ const Visualizer = () => {
       return;
     }
     if (x2 - x1 < 3 || y2 - y1 < 3) {
-      
       return;
     }
 
@@ -464,7 +465,12 @@ const Visualizer = () => {
         <div className="header-title">PathFinding Visualizer</div>
         <div className="controls-container">
           <div className="controls">
-            <select className="form-select select-algorithm-custom" value={selectedAlgorithm} onChange={handleAlgorithmChange} disabled={isMazeGenerating}>
+            <select
+              className="form-select select-algorithm-custom"
+              value={selectedAlgorithm}
+              onChange={handleAlgorithmChange}
+              disabled={isMazeGenerating}
+            >
               <option value="" disabled selected>
                 Select Algorithm
               </option>
