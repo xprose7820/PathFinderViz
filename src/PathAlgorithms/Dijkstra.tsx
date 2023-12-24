@@ -1,5 +1,6 @@
 import { NodeType } from "../Node";
 import { PathNodeWithDirection } from "../Node";
+
 async function dijkstra(
   grid: NodeType[][],
   startNode: NodeType | null,
@@ -46,34 +47,24 @@ async function dijkstra(
 
     await new Promise((resolve) => setTimeout(resolve, 1));
     if (closestNode!.row === 1 && closestNode!.col === 2) {
-      console.log(
-        "before updating visited state",
-        JSON.stringify(grid[1][2], null, 2)
-      );
+      console.log("before updating visited state", JSON.stringify(grid[1][2], null, 2));
     }
     // console.log("updating grid inside dij");
     updateGridDuringPathFind(closestNode!);
     if (closestNode!.row === 1 && closestNode!.col === 2) {
-      console.log(
-        "before updating visited state",
-        JSON.stringify(grid[1][2], null, 2)
-      );
+      console.log("before updating visited state", JSON.stringify(grid[1][2], null, 2));
     }
 
     if (closestNode === localGrid[endNode!.row][endNode!.col]) {
-      
-      const pathWithDirections: PathNodeWithDirection[] = reconstructPath(
-        closestNode!
-      );
+      const pathWithDirections: PathNodeWithDirection[] = reconstructPath(closestNode!);
       pathWithDirections.pop();
       // console.log(path);
       // console.log("calling SetPathNodes");
       // setPathNodes(path);
       for (const pathNodeWithDirection of pathWithDirections) {
-        
-        await new Promise((resolve) => setTimeout(resolve, 80));
+        await new Promise((resolve) => setTimeout(resolve, 20));
 
-        if (stopExecution.current){
+        if (stopExecution.current) {
           break;
         }
         setPathNodesWithDelay(pathNodeWithDirection);
@@ -145,10 +136,7 @@ function reconstructPath(endNode: NodeType): PathNodeWithDirection[] {
   let currentNode: NodeType | null = endNode;
 
   while (currentNode && currentNode.previousNode) {
-    const direction = getDirectionFromPrevious(
-      currentNode.previousNode,
-      currentNode
-    );
+    const direction = getDirectionFromPrevious(currentNode.previousNode, currentNode);
     path.unshift({ node: currentNode, direction }); // Store node with direction
     currentNode = currentNode.previousNode;
   }
@@ -161,10 +149,7 @@ function reconstructPath(endNode: NodeType): PathNodeWithDirection[] {
   return path;
 }
 
-function getDirectionFromPrevious(
-  previousNode: NodeType,
-  currentNode: NodeType
-): number {
+function getDirectionFromPrevious(previousNode: NodeType, currentNode: NodeType): number {
   if (previousNode.row < currentNode.row) return 3; // Down
   if (previousNode.row > currentNode.row) return 1; // Up
   if (previousNode.col < currentNode.col) return 2; // Right

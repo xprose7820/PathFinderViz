@@ -67,7 +67,9 @@
 .select-maze-custom:disabled{
     opacity: .4 !important; 
 }
-
+.select-algorithm-custom:disabled{
+    opacity: .4 !important;
+}
 .container_middle {
     position: relative;
     display: flex;

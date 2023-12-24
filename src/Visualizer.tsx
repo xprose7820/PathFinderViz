@@ -18,24 +18,30 @@ const Visualizer = () => {
 
   const [selectedAlgorithm, setSelectedAlgorithm] = useState("");
 
-  const handleAlgorithmChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleAlgorithmChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     clearVisitState();
-    
+    setTimeout(() => clearVisitState, 10);
+
     setSelectedAlgorithm(event.target.value);
     console.log(event.target.value);
   };
 
-  const handleMazePatternChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const [isMazeGenerating, setIsMazeGenerating] = useState(false);
+
+  const handleMazePatternChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const pattern = event.target.value;
     setSelectedMazePattern(pattern); // Assuming you have a state for this
+    setIsMazeGenerating(true);
+    setTimeout(() => setIsMazeGenerating(true), 10); 
+    
 
     if (pattern === "recursiveDivision") {
       stopExecution.current = false;
-      generateMaze();
+      generateMaze()
+        .then(() => {
+          setIsMazeGenerating(false);
+        })
+        .catch(() => {});
     }
   };
 
@@ -90,12 +96,7 @@ const Visualizer = () => {
           // For example, toggling isWall
           if (!firstClickStart) {
             // Check if it is border
-            if (
-              row === 0 ||
-              row === numRows - 1 ||
-              col === 0 ||
-              col === numCols - 1
-            ) {
+            if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
               return node;
             }
             setFirstClickStart(true);
@@ -104,12 +105,7 @@ const Visualizer = () => {
             return { ...node, isStart: true };
           } else if (!secondClickEnd) {
             // Check if it is border
-            if (
-              row === 0 ||
-              row === numRows - 1 ||
-              col === 0 ||
-              col === numCols - 1
-            ) {
+            if (row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1) {
               return node;
             }
             setSecondClickEnd(true);
@@ -154,8 +150,6 @@ const Visualizer = () => {
         });
       });
     });
-
-
   };
 
   const setPathNodes = (path: NodeType[]) => {
@@ -164,9 +158,7 @@ const Visualizer = () => {
       return prevGrid.map((row) => {
         return row.map((node: NodeType) => {
           // Check if the current node is in the path
-          const isPathNode = path.some(
-            (pathNode) => pathNode.row === node.row && pathNode.col === node.col
-          );
+          const isPathNode = path.some((pathNode) => pathNode.row === node.row && pathNode.col === node.col);
           if (isPathNode) {
             // Mark node as part of the path
             return { ...node, isPath: true };
@@ -192,9 +184,7 @@ const Visualizer = () => {
   //   });
 
   // };
-  const setPathNodesWithDelay = (
-    pathNodeWithDirection: PathNodeWithDirection
-  ) => {
+  const setPathNodesWithDelay = (pathNodeWithDirection: PathNodeWithDirection) => {
     const { node, direction } = pathNodeWithDirection;
 
     setGrid((prevGrid) => {
@@ -213,25 +203,18 @@ const Visualizer = () => {
     // ... other logic to handle delay if needed
   };
 
-
-
   const handleNodeMouseEnter = (row: number, col: number) => {
     console.log("is mouse down", mouseDown);
     if (mouseDown && firstClickStart && secondClickEnd) {
       console.log("trying to setwall");
       const newGrid = grid.map((gridRow, rowIndex) =>
-        gridRow.map((node: NodeType, nodeIndex: number) =>
-          rowIndex === row && nodeIndex === col
-            ? { ...node, isWall: !node.isWall }
-            : node
-        )
+        gridRow.map((node: NodeType, nodeIndex: number) => (rowIndex === row && nodeIndex === col ? { ...node, isWall: !node.isWall } : node))
       );
       setGrid(newGrid);
     }
   };
 
-
- const startPathFinding = () => {
+  const startPathFinding = () => {
     // console.log(
     //   "this is startNode when clickgin run",
     //   JSON.stringify(startNode, null, 2)
@@ -241,32 +224,23 @@ const Visualizer = () => {
     // console.log("should be calling clearVisitState");
     clearVisitState();
 
-    
-    
-
     stopExecution.current = false;
-    
+
     console.log("this is row 1, col 2, should be right after clearVisitState", JSON.stringify(grid[1][2], null, 2));
 
     // console.log("inside startPathFinding function");
     if (selectedAlgorithm === "dijkstra") {
       console.log("starting dijkstra");
-      dijkstra(
-        grid,
-        startNode,
-        endNode,
-        updateGridDuringPathFind,
-        setPathNodesWithDelay,
-        stopExecution
-      );
+      dijkstra(grid, startNode, endNode, updateGridDuringPathFind, setPathNodesWithDelay, stopExecution);
     } else if (selectedAlgorithm === "aStar") {
       console.log("starting astar");
-      AStar(startNode!, endNode!, grid, updateGridDuringPathFind);
+      AStar(startNode!, endNode!, grid, updateGridDuringPathFind, setPathNodesWithDelay, stopExecution);
     }
   };
 
   const clearVisitState = () => {
     console.log("inside clear VisitState");
+    stopExecution.current = true;
 
     setGrid((prevGrid) => {
       return prevGrid.map((row) => {
@@ -275,23 +249,19 @@ const Visualizer = () => {
           // if (node.isPath !== 0){
           //   console.log("this node is a path", JSON.stringify(node, null, 2));
           // }
-          if (node.isVisited){
+          if (node.isVisited) {
             console.log("node was visited, fixing now", JSON.stringify(node, null, 2));
           }
-          
+
           return {
             ...node,
-          
+
             isVisited: false,
             isPath: 0,
-            
-          
           };
         });
       });
     });
-
-
   };
 
   const resetGrid = () => {
@@ -343,9 +313,7 @@ const Visualizer = () => {
     setSelectedMazePattern("");
   };
 
-  const handleResetClick: React.MouseEventHandler<HTMLButtonElement> = (
-    event
-  ) => {
+  const handleResetClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     resetGrid(); // First call
     setTimeout(() => resetGrid(), 10); // Second call, after the first one finishes
   };
@@ -367,7 +335,8 @@ const Visualizer = () => {
     }
   }
 
-  function generateMaze() {
+  function generateMaze(): Promise<void> {
+    return new Promise( (resolve, reject) => {
     setGrid((prevGrid) => {
       const newGrid = prevGrid.map((row) =>
         row.map((node: NodeType) => ({
@@ -381,6 +350,9 @@ const Visualizer = () => {
     });
 
     divideArea(1, 1, grid[0].length - 1, grid.length - 1, startNode!, endNode!);
+  resolve(); 
+  reject(new Error("maze failed"));
+  });
   }
 
   type Passage = {
@@ -391,36 +363,22 @@ const Visualizer = () => {
 
   const globalPassages: Passage[] = [];
 
-  async function divideArea(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    startNode: NodeType,
-    endNode: NodeType
-  ): Promise<void> {
+  async function divideArea(x1: number, y1: number, x2: number, y2: number, startNode: NodeType, endNode: NodeType): Promise<void> {
     if (stopExecution.current) {
       return;
     }
     if (x2 - x1 < 3 || y2 - y1 < 3) {
+      
       return;
     }
 
     const horizontal = y2 - y1 >= x2 - x1;
-    const wx = horizontal
-      ? x1
-      : Math.floor(Math.random() * (x2 - x1 - 2)) + x1 + 1;
-    const wy = horizontal
-      ? Math.floor(Math.random() * (y2 - y1 - 2)) + y1 + 1
-      : y1;
+    const wx = horizontal ? x1 : Math.floor(Math.random() * (x2 - x1 - 2)) + x1 + 1;
+    const wy = horizontal ? Math.floor(Math.random() * (y2 - y1 - 2)) + y1 + 1 : y1;
 
     // Determine the passage position
-    const px = horizontal
-      ? Math.floor(Math.random() * (x2 - x1 - 2)) + x1 + 1
-      : wx;
-    const py = horizontal
-      ? wy
-      : Math.floor(Math.random() * (y2 - y1 - 2)) + y1 + 1;
+    const px = horizontal ? Math.floor(Math.random() * (x2 - x1 - 2)) + x1 + 1 : wx;
+    const py = horizontal ? wy : Math.floor(Math.random() * (y2 - y1 - 2)) + y1 + 1;
 
     globalPassages.push({
       x: px,
@@ -435,22 +393,14 @@ const Visualizer = () => {
       for (let y = y1; y < y2; y++) {
         if ((horizontal && y === wy) || (!horizontal && x === wx)) {
           if ((horizontal && x === px) || (!horizontal && y === py)) continue;
-          if (
-            (x === startNode.col && y === startNode.row) ||
-            (x === endNode.col && y === endNode.row)
-          )
-            continue;
+          if ((x === startNode.col && y === startNode.row) || (x === endNode.col && y === endNode.row)) continue;
 
           // Check if this position is adjacent to a passage in the global list
           if (
             globalPassages.some(
               (passage) =>
-                (passage.direction === "vertical" &&
-                  Math.abs(passage.x - x) === 1 &&
-                  passage.y === y) ||
-                (passage.direction === "horizontal" &&
-                  Math.abs(passage.y - y) === 1 &&
-                  passage.x === x)
+                (passage.direction === "vertical" && Math.abs(passage.x - x) === 1 && passage.y === y) ||
+                (passage.direction === "horizontal" && Math.abs(passage.y - y) === 1 && passage.x === x)
             )
           ) {
             continue; // Skip placing a wall here if it's adjacent to a passage
@@ -513,11 +463,7 @@ const Visualizer = () => {
         <div className="header-title">PathFinding Visualizer</div>
         <div className="controls-container">
           <div className="controls">
-            <select
-              className="form-select"
-              value={selectedAlgorithm}
-              onChange={handleAlgorithmChange}
-            >
+            <select className="form-select select-algorithm-custom" value={selectedAlgorithm} onChange={handleAlgorithmChange} disabled={isMazeGenerating}>
               <option value="" disabled selected>
                 Select Algorithm
               </option>
@@ -536,15 +482,8 @@ const Visualizer = () => {
               </option>
               <option value="recursiveDivision">Recursive Division</option>
             </select>
-            <button
-              className="btn btn-custom"
-              onClick={startPathFinding}
-              disabled={!startNode || !endNode || !selectedAlgorithm}
-            >
-              Run{" "}
-              {selectedAlgorithm.charAt(0).toUpperCase() +
-                selectedAlgorithm.slice(1)}{" "}
-              Algorithm
+            <button className="btn btn-custom" onClick={startPathFinding} disabled={!startNode || !endNode || !selectedAlgorithm}>
+              Run {selectedAlgorithm.charAt(0).toUpperCase() + selectedAlgorithm.slice(1)} Algorithm
             </button>
             <button className="btn btn-danger" onClick={handleResetClick}>
               Reset
@@ -584,11 +523,7 @@ const Visualizer = () => {
         onMouseUp={() => setMouseDown(false)}
         onMouseLeave={() => setMouseDown(false)}
       >
-        <Grid
-          grid={grid}
-          onNodeClick={handleNodeClick}
-          onNodeMouseEnter={handleNodeMouseEnter}
-        />
+        <Grid grid={grid} onNodeClick={handleNodeClick} onNodeMouseEnter={handleNodeMouseEnter} />
       </div>
       {/* Rest of your component */}
     </>
