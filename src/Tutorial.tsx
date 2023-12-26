@@ -14,35 +14,35 @@ const bannerData = [
       text: "Explore different algorithms and mazes. Learn how each algorithm approaches the problem of finding the shortest path and how they perform under different conditions.",
     },
   ];
+  const TutorialBanner = () => {
+    const [currentPage, setCurrentPage] = useState(0);
+    const [isBannerVisible, setIsBannerVisible] = useState(true); // New state for banner visibility
   
-const TutorialBanner = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => (prev + 1 < bannerData.length ? prev + 1 : prev));
-  };
-
-  const goToPrevPage = () => {
-    setCurrentPage((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
-  };
-
-  const closeBanner = () => {
-    // Logic to close the banner
-  };
-
-  return (
-    <div className="tutorial-banner">
-      <div className="tutorial-content">
-        <p>{bannerData[currentPage].text}</p>
-        <div className="tutorial-navigation">
-          {currentPage > 0 && <button onClick={goToPrevPage}>Prev</button>}
-          {currentPage < bannerData.length - 1 && <button onClick={goToNextPage}>Next</button>}
-          <button className="close-button" onClick={closeBanner}>X</button>
+    const goToNextPage = () => {
+      setCurrentPage((prev) => (prev + 1 < bannerData.length ? prev + 1 : prev));
+    };
+  
+    const goToPrevPage = () => {
+      setCurrentPage((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+    };
+  
+    const closeBanner = () => {
+      setIsBannerVisible(false); // Update state to hide banner
+    };
+  
+    // Conditional rendering based on isBannerVisible
+    return isBannerVisible ? (
+      <div className="tutorial-banner">
+        <div className="tutorial-content">
+          <p>{bannerData[currentPage].text}</p>
+          <div className="tutorial-navigation">
+            {currentPage > 0 && <button onClick={goToPrevPage}>Prev</button>}
+            {currentPage < bannerData.length - 1 && <button onClick={goToNextPage}>Next</button>}
+            <button className="close-button" onClick={closeBanner}>X</button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-export default TutorialBanner;
-
+    ) : null;
+  };
+  
+  export default TutorialBanner;
