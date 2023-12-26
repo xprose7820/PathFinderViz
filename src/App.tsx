@@ -1,13 +1,16 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
+import TutorialBanner from "./Tutorial"; // Make sure to import the TutorialBanner component
 import Visualizer from "./Visualizer";
 
 function App() {
   return (
-    <div className="app">
-      <Visualizer />
-    </div>
+    <>
+      <TutorialBanner /> {/* Overlay should be at the root level, not nested */}
+      <div className="app">
+        <Visualizer />
+      </div>
+    </>
   );
 }
 

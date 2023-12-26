@@ -501,7 +501,7 @@ const Visualizer = () => {
       <div className="container_middle">
         <div className="legend-flex-container">
           <div id="carImg"></div>
-          <div style={{ marginLeft: "-.1rem" }}>Start Node, check</div>
+          <div style={{ marginLeft: "-.1rem" }}>Start Node</div>
         </div>
         <div className="legend-flex-container">
           <div id="flagImg"></div>
