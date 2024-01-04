@@ -1,76 +1,77 @@
-/* TutorialBanner.css */
-
 .tutorial-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;   /* Cover the full viewport width */
-    height: 100vh;  /* Cover the full viewport height */
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Above all other elements */
-  }
-  
-  .tutorial-content {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    display: flex; /* Use Flexbox */
-    flex-direction: column; /* Stack children vertically */
-    align-items: center; /* Center items horizontally */
-    z-index: 1001; /* Above the overlay background */
-    width: 80%; /* Example width, adjust as needed */
-    max-width: 600px; /* Maximum width, adjust as needed */
-    position: relative; /* Set position context for absolute children */
-    text-align: left; /* Align text to the left */
-  }
-  
-  .tutorial-navigation {
-    display: flex;
-    justify-content: space-between;
-    width: 100%; /* Take up full width to space out buttons */
-    margin-top: 20px; /* Add space between text and buttons */
-  }
-  
-  .tutorial-navigation button {
-    padding: 8px 16px;
-    margin: 0 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    outline: none;
-  }
-  
-  .tutorial-navigation button:hover {
-    background-color: #0056b3;
-  }
-  
-  .tutorial-navigation button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 10px; /* Position from the top of the tutorial-content */
-    right: 10px; /* Position from the right of the tutorial-content */
-    cursor: pointer;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 50%; /* Circular shape */
-    padding: 5px 8px;
-    font-size: 24px; /* Large font size for visibility */
-    font-weight: bold;
-    line-height: 1;
-  }
-  
-  .close-button:hover {
-    background: #c82333;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.tutorial-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1001;
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+  text-align: left;
+}
+
+.tutorial-navigation {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.button-container {
+  margin-right: 20px;
+}
+
+.tutorial-navigation button {
+  padding: 8px 16px;
+  margin: 0 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  outline: none;
+}
+
+.tutorial-navigation button:hover {
+  background-color: #0056b3;
+}
+
+.tutorial-navigation button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 8px;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.close-button:hover {
+  background: #c82333;
+}

@@ -3,7 +3,13 @@ import './Tutorial.css'; // Make sure to import your CSS file
 const bannerData = [
     {
       id: 1,
-      text: "Welcome to the PathFinding Visualizer! This tool allows you to visualize various pathfinding algorithms in action. Start by selecting an algorithm and watch it find the shortest path.",
+    text: (
+      <span>
+        Welcome to the PathFinding Visualizer! This tool allows you to visualize various pathfinding algorithms in action. 
+        Start by selecting an algorithm and watch it find the shortest path. <br /><br/>
+        To do so, you must first place your start and end nodes. Then, you may place your own walls on the grid, or select one of the pre-made mazes.
+      </span>
+    ),
     },
     {
       id: 2,
@@ -33,15 +39,18 @@ const bannerData = [
     // Conditional rendering based on isBannerVisible
     return isBannerVisible ? (
       <div className="tutorial-banner">
-        <div className="tutorial-content">
-          <p>{bannerData[currentPage].text}</p>
-          <div className="tutorial-navigation">
+      <div className="tutorial-content">
+        <p style={{marginTop: "3rem", paddingRight: "1rem", paddingLeft: "1rem"}}>{bannerData[currentPage].text}</p>
+        <div className="tutorial-navigation">
+          <div className="button-container">
             {currentPage > 0 && <button onClick={goToPrevPage}>Prev</button>}
             {currentPage < bannerData.length - 1 && <button onClick={goToNextPage}>Next</button>}
-            <button className="close-button" onClick={closeBanner}>X</button>
           </div>
+          <button className="close-button" onClick={closeBanner}>X</button>
         </div>
       </div>
+    </div>
+    
     ) : null;
   };
   
